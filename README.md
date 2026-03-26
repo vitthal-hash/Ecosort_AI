@@ -80,7 +80,7 @@ EcoSort AI is a full-stack AI system that performs real-time waste detection and
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/ecosort-ai.git
+git clone https://github.com/vitthal-hash/ecosort-ai.git
 cd ecosort-ai
 ```
 
