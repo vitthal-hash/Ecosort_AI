@@ -16,7 +16,7 @@ ecosort_env/
 # Environment Variables
 # -----------------------------
 .env
-.env.*
+!.env.example
 
 # -----------------------------
 # Node / React

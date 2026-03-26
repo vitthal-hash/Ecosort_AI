@@ -83,42 +83,44 @@ EcoSort AI is a full-stack AI system that performs real-time waste detection and
 git clone https://github.com/your-username/ecosort-ai.git
 cd ecosort-ai
 
-2. Backend
+### 2. Backend
+```bash
 cd backend
 pip install -r requirements.txt
 uvicorn api:app --reload
 
-3. Frontend
+### 3. Frontend
+```bash
 cd frontend
 npm install
 npm start
 
-4. Environment Variables
+### 4. Environment Variables
 
 Create a .env file in the backend folder:
 
 GEMINI_API_KEY=your_api_key_here
-🔄 System Flow
+## 🔄 System Flow
 
 Landing → Detection → Processing → Sorting → Stats → Study Mode + EcoBot
 
-🚧 Challenges Solved
+## 🚧 Challenges Solved
 Improved model accuracy through dataset refinement
 Handled incorrect detections using validation step
 Fixed UI alignment and rendering issues
 Integrated real-time detection with frontend
 
-📈 Future Scope
+## 📈 Future Scope
 Mobile application
 IoT-based smart bins
 Improved model accuracy
 Cloud deployment
 
-👤 Author
+## 👤 Author
 
 Vitthal More
 B.Tech – VIT Pune
 
-⭐ Support
+## ⭐ Support
 
 If you like this project, consider giving it a star ⭐
