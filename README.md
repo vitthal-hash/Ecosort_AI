@@ -82,18 +82,21 @@ EcoSort AI is a full-stack AI system that performs real-time waste detection and
 ```bash
 git clone https://github.com/your-username/ecosort-ai.git
 cd ecosort-ai
+```
 
 ### 2. Backend
 ```bash
 cd backend
 pip install -r requirements.txt
 uvicorn api:app --reload
+```
 
 ### 3. Frontend
 ```bash
 cd frontend
 npm install
 npm start
+```
 
 ### 4. Environment Variables
 
