@@ -1,0 +1,247 @@
+/* Landing3D.css — Cinematic Space Opera */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+/* ── Full screen canvas shell ───────────────────────────────────────────── */
+.container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  background: #000005;
+  overflow: hidden;
+}
+
+/* ── Radial vignette ────────────────────────────────────────────────────── */
+.fade {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 2;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 25%,
+    rgba(0, 0, 8, 0.55) 70%,
+    rgba(0, 0, 8, 0.88) 100%
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   WARP EFFECTS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Blue-green warp colour wash */
+.warp-overlay {
+  position: absolute; inset: 0; z-index: 20; pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 120, 255, 0.22) 0%,
+    rgba(0, 255, 150, 0.1)  40%,
+    rgba(0, 0, 16, 0.92)   100%
+  );
+}
+
+/* Hard white decel flash */
+.decel-flash {
+  position: absolute; inset: 0;
+  z-index: 30; pointer-events: none;
+  background: #ffffff;
+}
+
+/* Rolling CRT scanlines */
+.warp-scanlines {
+  position: absolute; inset: 0; z-index: 22; pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 150, 0.018) 0px,
+    rgba(0, 255, 150, 0.018) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  animation: scanRoll 0.07s linear infinite;
+}
+@keyframes scanRoll {
+  from { background-position: 0 0; }
+  to   { background-position: 0 8px; }
+}
+
+/* ── Cinematic letterbox ────────────────────────────────────────────────── */
+.letterbox-top,
+.letterbox-bot {
+  position: absolute; left: 0; right: 0; z-index: 18;
+  height: 68px;
+  background: #000;
+  transition:
+    height  1.5s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.letterbox-top { top: 0; }
+.letterbox-bot { bottom: 0; }
+
+.letterbox-top.letterbox-hide,
+.letterbox-bot.letterbox-hide {
+  height: 0;
+  opacity: 0;
+}
+
+/* ── HUD phase label ────────────────────────────────────────────────────── */
+.phase-label {
+  position: absolute;
+  bottom: 80px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  color: rgba(0, 255, 150, 0.8);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 0 24px rgba(0, 255, 150, 0.6);
+}
+.phase-label::after {
+  content: ' ▮';
+  animation: cur 0.75s step-end infinite;
+}
+@keyframes cur { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MAIN OVERLAY UI
+   ══════════════════════════════════════════════════════════════════════════ */
+.overlay {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  text-align: center;
+  pointer-events: none;
+  width: 100%; max-width: 700px;
+  padding: 0 24px;
+}
+.overlay.ready { pointer-events: auto; }
+
+/* Eyebrow */
+.overlay-eyebrow {
+  display: flex; align-items: center;
+  justify-content: center; gap: 16px;
+  margin-bottom: 22px;
+}
+.eyebrow-line {
+  flex: 1; max-width: 90px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,255,150,0.55));
+}
+.eyebrow-line:last-child {
+  background: linear-gradient(90deg, rgba(0,255,150,0.55), transparent);
+}
+.eyebrow-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  color: rgba(0, 255, 150, 0.7);
+  letter-spacing: 0.2em; text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Title */
+.overlay h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(3.2rem, 6.5vw, 6rem);
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 6px;
+  letter-spacing: 0.07em;
+  line-height: 1.0;
+  text-shadow:
+    0 0 50px rgba(255,255,255,0.12),
+    0 0 100px rgba(0,255,150,0.1),
+    0 2px 6px rgba(0,0,0,0.9);
+}
+.title-accent {
+  color: #00ff96;
+  text-shadow:
+    0 0 24px rgba(0,255,150,0.8),
+    0 0 60px rgba(0,255,150,0.35),
+    0 0 100px rgba(0,255,150,0.15);
+}
+
+/* Tagline */
+.overlay-tagline {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  color: rgba(255, 255, 255, 0.42);
+  margin: 14px 0 40px;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+}
+
+/* CTA */
+.enter-btn {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 15px 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 150, 0.35);
+  background: linear-gradient(135deg,
+    rgba(0, 255, 150, 0.1) 0%,
+    rgba(0, 200, 130, 0.06) 100%
+  );
+  color: #00ff96;
+  font-family: 'Orbitron', monospace;
+  font-size: 12px; font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  box-shadow:
+    inset 0 0 0 1px rgba(0,255,150,0.07),
+    0 0 40px rgba(0,255,150,0.1),
+    0 8px 32px rgba(0,0,0,0.55);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative; overflow: hidden;
+}
+.enter-btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(0,255,150,0.18), transparent 60%);
+  opacity: 0; transition: opacity 0.3s;
+}
+.enter-btn:hover {
+  border-color: rgba(0, 255, 150, 0.65);
+  color: #fff;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,255,150,0.18),
+    0 0 60px rgba(0,255,150,0.22),
+    0 12px 48px rgba(0,0,0,0.65);
+}
+.enter-btn:hover::after { opacity: 1; }
+
+.btn-arrow {
+  font-size: 16px;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.enter-btn:hover .btn-arrow { transform: translateX(6px); }
+
+/* Stats row */
+.overlay-stats {
+  display: flex; align-items: center;
+  justify-content: center; gap: 30px;
+  margin-top: 38px;
+}
+.overlay-stat {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+}
+.overlay-stat-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 14px; font-weight: 700;
+  color: #00ff96; letter-spacing: 0.04em;
+  text-shadow: 0 0 16px rgba(0,255,150,0.55);
+}
+.overlay-stat-label {
+  font-size: 8px; color: rgba(255,255,255,0.28);
+  text-transform: uppercase; letter-spacing: 0.2em;
+  font-family: 'Space Mono', monospace;
+}
+.overlay-stat-sep {
+  width: 1px; height: 30px;
+  background: linear-gradient(180deg,
+    transparent,
+    rgba(255,255,255,0.14),
+    transparent
+  );
+}
+
+body { transition: opacity 0.4s ease; }

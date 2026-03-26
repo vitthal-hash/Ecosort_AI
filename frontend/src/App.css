@@ -1,0 +1,124 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   App.css — EcoSort AI  ·  "Pale Blue Dot" Design System
+   Theme: Deep Space meets Living Earth — bioluminescent greens on void black
+   Fonts: Orbitron (display) + DM Sans (body) + Space Mono (data)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+/* ── DARK THEME (default) — Deep Space ────────────────────────────────────── */
+:root,
+html[data-theme="dark"],
+html:not([data-theme]) {
+  --bg:          #020408;
+  --bg2:         #040810;
+  --bg3:         #080f1c;
+  --panel-bg:    #050b16;
+  --card-bg:     #070d1a;
+  --input-bg:    #080f1c;
+  --nav-bg:      rgba(2, 4, 8, 0.96);
+  --border:      rgba(0, 255, 150, 0.08);
+  --border-glow: rgba(0, 255, 150, 0.25);
+  --text:        #e8f4f0;
+  --text-dim:    #8bb8a8;
+  --text-muted:  #3d6b5a;
+
+  /* Accent palette */
+  --accent:      #00ff96;
+  --accent2:     #00d4aa;
+  --accent-dim:  rgba(0, 255, 150, 0.12);
+  --accent-glow: rgba(0, 255, 150, 0.35);
+
+  /* Earth palette */
+  --earth-blue:  #1a6b9a;
+  --earth-green: #2d8b5a;
+  --earth-cloud: rgba(180, 220, 255, 0.15);
+
+  /* Bin colors */
+  --bin-dry:     #3b82f6;
+  --bin-wet:     #22c55e;
+  --bin-med:     #ef4444;
+
+  /* Glass */
+  --glass:       rgba(0, 255, 150, 0.04);
+  --glass-hover: rgba(0, 255, 150, 0.08);
+  --glass-border:rgba(0, 255, 150, 0.12);
+
+  /* Danger / gold */
+  --danger:      #ff4d6d;
+  --gold:        #fbbf24;
+
+  color-scheme: dark;
+}
+
+/* ── LIGHT THEME — Morning Atmosphere ─────────────────────────────────────── */
+html[data-theme="light"] {
+  --bg:          #f0f7f4;
+  --bg2:         #e8f2ee;
+  --bg3:         #dceee7;
+  --panel-bg:    #ffffff;
+  --card-bg:     #ffffff;
+  --input-bg:    #f0f7f4;
+  --nav-bg:      rgba(255, 255, 255, 0.95);
+  --border:      rgba(0, 120, 80, 0.1);
+  --border-glow: rgba(0, 120, 80, 0.3);
+  --text:        #0a2018;
+  --text-dim:    #2d5a42;
+  --text-muted:  #6b9a85;
+
+  --accent:      #00a86b;
+  --accent2:     #007a50;
+  --accent-dim:  rgba(0, 168, 107, 0.1);
+  --accent-glow: rgba(0, 168, 107, 0.3);
+
+  --earth-blue:  #2980b9;
+  --earth-green: #27ae60;
+  --earth-cloud: rgba(100, 160, 220, 0.12);
+
+  --glass:       rgba(0, 168, 107, 0.05);
+  --glass-hover: rgba(0, 168, 107, 0.1);
+  --glass-border:rgba(0, 168, 107, 0.15);
+
+  --danger:      #e53e3e;
+  --gold:        #d97706;
+
+  color-scheme: light;
+}
+
+/* ── RESET ─────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+html, body {
+  margin: 0; padding: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-glow); border-radius: 2px; }
+
+/* ── Noise texture overlay (subtle grain on dark bg) ──────────────────────── */
+html[data-theme="dark"] body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+  opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+}
+
+.App { text-align: center; }

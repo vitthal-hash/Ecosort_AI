@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 8
+names: ['Biodegradable', 'E-Waste', 'Medical-Waste', 'Cardboard', 'Glass', 'Metal', 'Paper', 'Plastic']
+
+roboflow:
+  workspace: ace-vezew
+  project: waste-utrwb
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/ace-vezew/waste-utrwb/dataset/1

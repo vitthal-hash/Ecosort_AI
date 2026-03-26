@@ -1,0 +1,356 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap');
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THEME VARIABLES
+   Set on <html data-theme="dark|light"> — every component reads these.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root,
+html[data-theme="dark"],
+html:not([data-theme]) {
+  --bg:               #060810;
+  --bg2:              #0a0f1e;
+  --bg3:              #111827;
+  --card-bg:          #0d1117;
+  --panel-bg:         #0a0f1e;
+  --input-bg:         #111827;
+  --nav-bg:           rgba(6,8,16,0.95);
+  --border:           rgba(255,255,255,0.07);
+  --border-solid:     #1f2937;
+  --text:             #e2e8f0;
+  --text-dim:         #94a3b8;
+  --text-muted:       #64748b;
+  --accent:           #00ffc8;
+  --accent2:          #00d4aa;
+  --glass-white:      rgba(255,255,255,0.05);
+  --glass-white-hover:rgba(255,255,255,0.10);
+  --glass-border:     rgba(255,255,255,0.10);
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  --bg:               #f0f4f8;
+  --bg2:              #ffffff;
+  --bg3:              #e2e8f0;
+  --card-bg:          #ffffff;
+  --panel-bg:         #f8fafc;
+  --input-bg:         #f0f4f8;
+  --nav-bg:           rgba(255,255,255,0.97);
+  --border:           rgba(0,0,0,0.09);
+  --border-solid:     #d1d9e0;
+  --text:             #0f172a;
+  --text-dim:         #334155;
+  --text-muted:       #64748b;
+  --accent:           #009e76;
+  --accent2:          #007a5c;
+  --glass-white:      rgba(0,0,0,0.04);
+  --glass-white-hover:rgba(0,0,0,0.08);
+  --glass-border:     rgba(0,0,0,0.10);
+  color-scheme: light;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESET
+   ═══════════════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════════════════════════ */
+html { overflow-x: hidden; scroll-behavior: smooth; }
+
+body {
+  overflow-x: hidden;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+#root {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PAGE ROOTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.layout-root, .proc-root, .bin-root, .stats-root,
+.study-root, .scan-root, .eco-root,
+.layout-content, .proc-empty, .bin-finished, .bin-guard {
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOP NAV
+   ═══════════════════════════════════════════════════════════════════════════ */
+.topnav {
+  background: var(--nav-bg) !important;
+  border-bottom-color: var(--border) !important;
+}
+.topnav-name           { color: var(--text)        !important; }
+.topnav-tab            { color: var(--text-muted)  !important; }
+.topnav-tab:hover      { color: var(--text-dim)    !important; }
+.topnav-tab.active     { color: var(--text)        !important; }
+html[data-theme="light"] .topnav-scan-btn {
+  background:   rgba(0,158,118,0.1);
+  border-color: rgba(0,158,118,0.3);
+  color: var(--accent);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ECO CHAT — left panel, chat area, input
+   ═══════════════════════════════════════════════════════════════════════════ */
+.eco-panel {
+  background: var(--panel-bg) !important;
+  border-right-color: var(--border) !important;
+}
+.eco-chat           { background: var(--bg)       !important; }
+.eco-messages       { background: var(--bg)       !important; }
+.eco-chat-header {
+  background: var(--panel-bg) !important;
+  border-bottom-color: var(--border) !important;
+}
+.eco-input-row {
+  background: var(--panel-bg) !important;
+  border-top-color:  var(--border) !important;
+}
+.quick-chips {
+  background: var(--bg) !important;
+  border-top-color: var(--border) !important;
+}
+.eco-detail {
+  background: var(--bg3) !important;
+  border-color: var(--border) !important;
+}
+.eco-panel-nav { border-top-color: var(--border) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ECOBOT SIDEBAR
+   ═══════════════════════════════════════════════════════════════════════════ */
+.ecobot-panel {
+  background: var(--panel-bg) !important;
+  border-left-color: var(--border) !important;
+}
+.ecobot-header {
+  background: var(--card-bg) !important;
+  border-bottom-color: var(--border) !important;
+}
+.ecobot-messages    { background: var(--panel-bg) !important; }
+.ecobot-chips       { background: var(--panel-bg) !important; border-top-color: var(--border) !important; }
+.ecobot-input-row   { background: var(--card-bg)  !important; border-top-color: var(--border) !important; }
+.ecobot-tab {
+  background: var(--card-bg) !important;
+  border-color: rgba(0,255,200,0.2) !important;
+}
+html[data-theme="light"] .ecobot-panel { box-shadow: -8px 0 40px rgba(0,0,0,0.15); }
+html[data-theme="light"] .ecobot-tab   { box-shadow: -4px 0 20px rgba(0,0,0,0.1); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCAN MODE — side panel
+   ═══════════════════════════════════════════════════════════════════════════ */
+.side-panel { background: var(--bg2) !important; border-left-color: var(--border) !important; }
+.camera-panel { background: var(--bg) !important; }
+html[data-theme="dark"] .camera-panel {
+  background: linear-gradient(160deg, #090e1e 0%, #060810 100%) !important;
+}
+.count-bar-wrap { background: var(--glass-white) !important; }
+.fps-badge { background: rgba(0,0,0,0.5) !important; }
+html[data-theme="light"] .fps-badge { background: rgba(255,255,255,0.8) !important; color: var(--text) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CARDS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.kpi-card, .chart-card, .achievements,
+.bin-card, .item-card, .news-card, .summary-card,
+.bin-result-card, .bin-tally-row, .session-row, .achievement {
+  background: var(--card-bg) !important;
+  border-color: var(--border) !important;
+}
+.count-row {
+  background: var(--bg3) !important;
+  border-color: var(--border) !important;
+}
+.news-card { background: var(--panel-bg) !important; }
+html[data-theme="light"] .news-card:hover { border-color: rgba(0,158,118,0.4) !important; }
+.achievement { background: var(--bg) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MESSAGE BUBBLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+.ebot-bubble {
+  background: var(--card-bg) !important;
+  border-color: var(--border) !important;
+}
+.eco-msg-bubble {
+  background: var(--card-bg) !important;
+  border-color: var(--border) !important;
+}
+/* keep user bubbles tinted */
+.ebot-msg-user .ebot-bubble {
+  background: rgba(0,255,200,0.08) !important;
+  border-color: rgba(0,255,200,0.2) !important;
+}
+.eco-msg-user .eco-msg-bubble {
+  background: linear-gradient(135deg,rgba(0,255,200,0.12),rgba(0,212,170,0.08)) !important;
+  border-color: rgba(0,255,200,0.25) !important;
+}
+.ebot-bubble p, .eco-msg-text p { color: var(--text) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INPUTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.ecobot-input, .eco-input {
+  background: var(--input-bg) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+.ecobot-input::placeholder, .eco-input::placeholder { color: var(--text-muted) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TEXT — enforce theme colors on every key element
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Full text */
+.eco-panel-title, .eco-chat-title, .ecobot-name,
+.kpi-number, .skpi-num, .flying-label,
+.bin-result-title, .news-title, .proc-class-name,
+.brand-name, .count-label, .item-card-label,
+.summary-card-label, .topnav-name, .study-title,
+.stats-header h1, .summary-title h1,
+.bin-finished h1, .bin-guard h2,
+.section-label-title {
+  color: var(--text) !important;
+}
+
+/* Muted */
+.eco-panel-sub, .eco-chat-sub, .eco-stat-label,
+.eco-funfact, .eco-msg-ts, .eco-reuse-title,
+.kpi-label, .skpi-label, .section-label,
+.brand-sub, .empty-state, .bin-desc,
+.news-summary, .news-meta, .chart-title,
+.proc-class-sub, .breakdown-title, .finished-date,
+.stats-section-label, .session-row-date, .ach-label,
+.csb-sub, .ecobot-status {
+  color: var(--text-muted) !important;
+}
+
+/* Dim */
+.eco-class-tab, .eco-reuse-list li, .ebot-speak,
+.quick-chip, .ecobot-chip, .topic-tab,
+.btn-nav, .legend-item, .finished-motivate,
+.proc-class-sub, .eco-msg-ts {
+  color: var(--text-dim) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CHIPS, TABS & GLASS BUTTONS — flip rgba(255,255,255,*) in light mode
+   ═══════════════════════════════════════════════════════════════════════════ */
+.quick-chip, .ecobot-chip, .topic-tab {
+  background: var(--card-bg) !important;
+  border-color: var(--border) !important;
+  color: var(--text-dim) !important;
+}
+.eco-class-tab {
+  background: transparent !important;
+  border-color: var(--border) !important;
+  color: var(--text-dim) !important;
+}
+.tab-count {
+  background: var(--glass-white) !important;
+  border-color: var(--glass-border) !important;
+  color: var(--text-dim) !important;
+}
+
+/* Ghost / outline buttons */
+.btn-nav {
+  background: var(--glass-white) !important;
+  border-color: var(--border) !important;
+  color: var(--text-dim) !important;
+}
+.btn-nav:hover {
+  background: var(--glass-white-hover) !important;
+  border-color: var(--border-solid) !important;
+  color: var(--text) !important;
+}
+.stats-back, .stats-study,
+.study-back, .study-stats,
+.bin-guard-btn, .btn-stats, .btn-new,
+.ecobot-stop-btn, .ecobot-close-btn {
+  background: var(--glass-white) !important;
+  border-color: var(--glass-border) !important;
+  color: var(--text-dim) !important;
+}
+.stats-back:hover, .stats-study:hover,
+.study-back:hover, .study-stats:hover {
+  background: var(--glass-white-hover) !important;
+  color: var(--text) !important;
+}
+.ecobot-close-btn:hover { color: var(--text) !important; }
+
+/* Tally / session chips */
+.bin-tally-chip, .session-row-chip {
+  background: var(--glass-white) !important;
+  border-color: var(--glass-border) !important;
+  color: var(--text-dim) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROCESSING — progress dots / connectors
+   ═══════════════════════════════════════════════════════════════════════════ */
+.proc-progress-dot { background: var(--bg3) !important; }
+.proc-progress-segment:not(:last-child)::after { color: var(--border-solid) !important; }
+.item-card { border-color: var(--border) !important; }
+.item-card-img-wrap { background: var(--bg3) !important; }
+.btn-back { border-color: var(--border-solid) !important; color: var(--text-dim) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STATISTICS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.csb-divider { background: var(--border) !important; }
+.equivalents-strip .eq-item {
+  background: var(--panel-bg) !important;
+  border-color: var(--border) !important;
+  color: var(--text-dim) !important;
+}
+.equivalents-strip .eq-item span { color: var(--text) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RECHARTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.recharts-text,
+.recharts-cartesian-axis-tick-value { fill: var(--text-muted) !important; }
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical   line { stroke: var(--border) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SMOOTH TRANSITIONS on theme switch
+   ═══════════════════════════════════════════════════════════════════════════ */
+.topnav, .eco-panel, .eco-chat, .eco-messages, .eco-chat-header, .eco-input-row,
+.ecobot-panel, .ecobot-header, .ecobot-messages, .ecobot-input-row, .ecobot-tab,
+.side-panel, .camera-panel,
+.kpi-card, .chart-card, .news-card, .item-card, .bin-card, .count-row,
+.ebot-bubble, .eco-msg-bubble,
+.ecobot-input, .eco-input,
+.quick-chip, .ecobot-chip, .topic-tab,
+.btn-nav, .stats-back, .stats-study, .study-back, .study-stats,
+.bin-tally-chip, .session-row-chip {
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+}
