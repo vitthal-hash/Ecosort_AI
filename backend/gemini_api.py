@@ -1,9 +1,13 @@
 from fastapi import APIRouter
 from google import genai
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # load .env
 
 router = APIRouter()
 
-client = genai.Client(api_key="AIzaSyAlzdAgswNQ80CfMxAZ7FtpduDJ9Wh5qew")
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 @router.post("/chat")
 def chat(data: dict):
