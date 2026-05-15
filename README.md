@@ -124,46 +124,55 @@ EcoSort AI supports both **live camera detection** and **image upload-based dete
 # 🏗️ System Architecture
 
 ```text
-React Frontend
-      │
-      ├── FastAPI Backend (YOLOv8 Inference)
-      │        ├── Image Detection
-      │        ├── Real-time Webcam Detection
-      │        └── Gemini AI Chatbot
-      │
-      └── Node.js + Express Backend
-               ├── Authentication
-               ├── User Sessions
-               ├── Statistics Storage
-               └── MongoDB Atlas
+EcoSort_AI
+│
+├── React Frontend
+│     ├── Live Detection UI
+│     ├── Image Upload Detection
+│     ├── Statistics Dashboard
+│     ├── EcoBot Chat Interface
+│     └── Study Mode
+│
+├── FastAPI Backend
+│     ├── YOLOv8 Inference
+│     ├── Real-time Detection
+│     ├── Image Processing
+│     └── Gemini AI Integration
+│
+└── Node.js + Express Backend
+      ├── Authentication System
+      ├── User Session Storage
+      ├── Statistics Management
+      └── MongoDB Atlas Integration
+```
 
 ---
 
 # 📸 Screenshots
 
 ## 🏠 Landing Page
-![Landing](assets/landing.png)
+![Landing](assets/screenshots/landing.png)
 
 ## 🎯 Real-Time Detection
-![Detection](assets/detection.png)
+![Detection](assets/screenshots/detection.png)
 
 ## 🖼️ Image Upload Detection
-![Upload](assets/upload.png)
+![Upload](assets/screenshots/upload.png)
 
 ## 🧠 Processing & Validation
-![Processing](assets/processing.png)
+![Processing](assets/screenshots/processing.png)
 
 ## 🗑️ Sorting Guidance
-![Sorting](assets/sorting.png)
+![Sorting](assets/screenshots/sorting.png)
 
 ## 📊 Statistics Dashboard
-![Stats](assets/stats.png)
+![Stats](assets/screenshots/stats.png)
 
 ## 🤖 EcoBot Assistant
-![Chatbot](assets/chatbot.png)
+![Chatbot](assets/screenshots/chatbot.png)
 
 ## 📚 Study Mode
-![Study](assets/study.png)
+![Study](assets/screenshots/study.png)
 
 ---
 
@@ -188,6 +197,7 @@ EcoSort_AI/
 ├── assets/
 ├── README.md
 └── .gitignore
+```
 
 ---
 
