@@ -142,28 +142,28 @@ React Frontend
 # 📸 Screenshots
 
 ## 🏠 Landing Page
-![Landing](assets/screenshots/landing.png)
+![Landing](assets/landing.png)
 
 ## 🎯 Real-Time Detection
-![Detection](assets/screenshots/detection.png)
+![Detection](assets/detection.png)
 
 ## 🖼️ Image Upload Detection
-![Upload](assets/screenshots/upload.png)
+![Upload](assets/upload.png)
 
 ## 🧠 Processing & Validation
-![Processing](assets/screenshots/processing.png)
+![Processing](assets/processing.png)
 
 ## 🗑️ Sorting Guidance
-![Sorting](assets/screenshots/sorting.png)
+![Sorting](assets/sorting.png)
 
 ## 📊 Statistics Dashboard
-![Stats](assets/screenshots/stats.png)
+![Stats](assets/stats.png)
 
 ## 🤖 EcoBot Assistant
-![Chatbot](assets/screenshots/chatbot.png)
+![Chatbot](assets/chatbot.png)
 
 ## 📚 Study Mode
-![Study](assets/screenshots/study.png)
+![Study](assets/study.png)
 
 ---
 
