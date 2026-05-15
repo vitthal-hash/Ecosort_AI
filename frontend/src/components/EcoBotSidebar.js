@@ -203,7 +203,11 @@ export default function EcoBotSidebar({ onToggle }) {
       const res = await fetch("http://127.0.0.1:8000/chat", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ prompt: text }),
+  body: JSON.stringify({
+    prompt: trimmed,
+    system: fullSystemPrompt,
+    history: historyRef.current
+  }),
 });
 
 const data = await res.json();

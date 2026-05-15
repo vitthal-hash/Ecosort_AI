@@ -341,3 +341,471 @@ body {
 
 .side-panel::-webkit-scrollbar { width: 3px; }
 .side-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── DOM Bounding Boxes ─────────────────────────────────────────────────────── */
+.bounding-box {
+  position: absolute;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.bb-corner {
+  position: absolute;
+  width: 15px; height: 15px;
+  border-style: solid;
+  border-color: inherit;
+  border-width: 0;
+}
+.bb-corner.tl { top: -2px; left: -2px; border-top-width: 3px; border-left-width: 3px; border-radius: 4px 0 0 0; }
+.bb-corner.tr { top: -2px; right: -2px; border-top-width: 3px; border-right-width: 3px; border-radius: 0 4px 0 0; }
+.bb-corner.bl { bottom: -2px; left: -2px; border-bottom-width: 3px; border-left-width: 3px; border-radius: 0 0 0 4px; }
+.bb-corner.br { bottom: -2px; right: -2px; border-bottom-width: 3px; border-right-width: 3px; border-radius: 0 0 4px 0; }
+
+.bb-label {
+  position: absolute;
+  top: -26px; left: -2px;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.bb-id {
+  position: absolute;
+  top: 4px; right: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px; font-weight: bold;
+  background: rgba(0,0,0,0.8);
+  border: 1px solid;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+/* ──────────────────────────────────────────────────────────────
+   APPEND TO ScanMode.css — Upload tab additions
+   ────────────────────────────────────────────────────────────── */
+
+/* Tab bar at top of camera panel */
+.scan-tab-bar {
+  display: flex;
+  gap: 0;
+  background: rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+  z-index: 10;
+  position: relative;
+}
+
+.scan-tab {
+  flex: 1;
+  padding: 12px 18px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #64748b);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+  letter-spacing: 0.01em;
+}
+
+.scan-tab:hover {
+  color: var(--text-dim, #94a3b8);
+  background: rgba(255,255,255,0.04);
+}
+
+.scan-tab.active {
+  color: var(--accent, #00ffc8);
+  border-bottom-color: var(--accent, #00ffc8);
+  background: rgba(0,255,200,0.04);
+}
+
+/* Upload panel wrapper */
+.upload-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px;
+  min-height: 400px;
+  width: 100%;
+  overflow-y: auto;
+  gap: 16px;
+}
+
+/* Drop zone */
+.upload-dropzone {
+  width: 100%;
+  max-width: 480px;
+  border: 2px dashed rgba(0,255,200,0.3);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  display: block;
+}
+
+.upload-dropzone:hover {
+  border-color: rgba(0,255,200,0.7);
+  background: rgba(0,255,200,0.04);
+}
+
+.upload-dropzone-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 24px;
+}
+
+.upload-icon { font-size: 48px; }
+
+.upload-hint {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text, #e2e8f0);
+}
+
+.upload-hint-sub {
+  font-size: 12px;
+  color: var(--text-muted, #64748b);
+}
+
+/* Preview area */
+.upload-preview-wrap {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.upload-preview-img {
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: block;
+}
+
+.upload-img-container {
+  width: 100%;
+}
+
+/* Video progress */
+.video-progress-wrap {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.video-progress-label {
+  font-size: 12px;
+  color: var(--accent, #00ffc8);
+  margin-bottom: 6px;
+}
+
+.video-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.video-progress-fill {
+  height: 100%;
+  background: var(--accent, #00ffc8);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Detection results summary */
+.upload-results {
+  width: 100%;
+  background: rgba(0,255,200,0.06);
+  border: 1px solid rgba(0,255,200,0.2);
+  border-radius: 12px;
+  padding: 14px 18px;
+}
+
+.upload-results-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent, #00ffc8);
+  margin-bottom: 10px;
+}
+
+.upload-no-result {
+  font-size: 13px;
+  color: #f59e0b;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Upload action buttons */
+.upload-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+/* ══════════════════════════════════════════════════════════════
+   APPEND TO ScanMode.css — Upload tab + ImageCard styles
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Tab bar ───────────────────────────────────────────────── */
+.scan-tab-bar {
+  display: flex;
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.scan-tab {
+  flex: 1;
+  padding: 13px 18px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.01em;
+}
+.scan-tab:hover  { color: var(--text-dim); background: rgba(255,255,255,0.03); }
+.scan-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(0,255,200,0.04); }
+
+/* ── Upload panel ──────────────────────────────────────────── */
+.upload-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  width: 100%;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* ── Drop zone ─────────────────────────────────────────────── */
+.upload-dropzone {
+  display: block;
+  width: 100%;
+  max-width: 660px;
+  border: 2px dashed rgba(0,255,200,0.25);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+.upload-dropzone:hover {
+  border-color: rgba(0,255,200,0.6);
+  background: rgba(0,255,200,0.04);
+}
+.upload-dropzone-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 44px 24px;
+}
+.upload-icon     { font-size: 46px; }
+.upload-hint     { font-size: 15px; font-weight: 600; color: var(--text); }
+.upload-hint-sub { font-size: 12px; color: var(--text-muted); text-align: center; }
+
+/* ── Image grid ────────────────────────────────────────────── */
+.upload-img-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  width: 100%;
+}
+
+/* ── Individual image card ─────────────────────────────────── */
+.img-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s;
+}
+.img-card:hover { border-color: var(--border-glow); }
+
+.img-card-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: var(--bg3, #0a0f14);
+  overflow: hidden;
+}
+.img-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* loading overlay */
+.img-card-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+.img-card-spinner {
+  width: 28px; height: 28px;
+  border: 3px solid rgba(0,255,200,0.2);
+  border-top-color: var(--accent, #00ffc8);
+  border-radius: 50%;
+  animation: imgSpin 0.75s linear infinite;
+}
+@keyframes imgSpin { to { transform: rotate(360deg); } }
+
+/* status badge top-left */
+.img-card-badge {
+  position: absolute;
+  top: 8px; left: 8px;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.75);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  z-index: 6;
+  backdrop-filter: blur(6px);
+}
+.img-card-badge.done  { color: #00ff96; }
+.img-card-badge.error { color: #ff4d6d; }
+
+/* remove button top-right */
+.img-card-remove {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 22px; height: 22px;
+  background: rgba(255,77,109,0.85);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 6;
+  transition: background 0.15s, transform 0.15s;
+}
+.img-card-remove:hover { background: #ff4d6d; transform: scale(1.1); }
+
+/* filename + detect button row */
+.img-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--border);
+}
+.img-card-name {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+.img-card-detect-btn {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent, #00ffc8), var(--accent2, #00b4d8));
+  color: #000;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.img-card-detect-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.img-card-detect-btn.retry { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+
+/* class chips below footer */
+.img-card-classes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 7px 10px;
+  border-top: 1px solid var(--border);
+}
+.img-card-class-chip {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid;
+  background: transparent;
+  letter-spacing: 0.04em;
+}
+
+/* error message */
+.img-card-error {
+  font-size: 11px;
+  color: #ff4d6d;
+  padding: 6px 10px;
+  background: rgba(255,77,109,0.08);
+  border-top: 1px solid rgba(255,77,109,0.2);
+}
+
+/* ── Video progress ────────────────────────────────────────── */
+.video-progress-wrap  { width: 100%; }
+.video-progress-label { font-size: 12px; color: var(--accent, #00ffc8); margin-bottom: 6px; font-family: var(--font-mono); }
+.video-progress-track { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+.video-progress-fill  { height: 100%; background: var(--accent, #00ffc8); border-radius: 2px; transition: width 0.3s ease; }
+
+/* ── Upload results / ready box ────────────────────────────── */
+.upload-results {
+  background: rgba(0,255,200,0.05);
+  border: 1px solid rgba(0,255,200,0.2);
+  border-radius: 12px;
+  padding: 14px 18px;
+}
+.upload-results-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent, #00ffc8);
+}
+
+/* ── Light theme overrides ─────────────────────────────────── */
+[data-theme="light"] .scan-tab        { color: #6b9a85; }
+[data-theme="light"] .scan-tab:hover  { color: #2d5a42; }
+[data-theme="light"] .scan-tab.active { color: #007850; border-bottom-color: #007850; background: rgba(0,120,80,0.06); }
+[data-theme="light"] .upload-dropzone { border-color: rgba(0,120,80,0.25); }
+[data-theme="light"] .upload-dropzone:hover { border-color: rgba(0,120,80,0.6); background: rgba(0,120,80,0.04); }
+[data-theme="light"] .img-card { background: #fff; border-color: rgba(0,0,0,0.1); }
+[data-theme="light"] .img-card-preview { background: #f1f5f9; }
+[data-theme="light"] .img-card-name { color: #64748b; }
+[data-theme="light"] .img-card-badge { background: rgba(255,255,255,0.9); color: #64748b; }
+[data-theme="light"] .img-card-badge.done  { color: #16a34a; }
+[data-theme="light"] .img-card-badge.error { color: #dc2626; }

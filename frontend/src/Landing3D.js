@@ -529,7 +529,7 @@ export default function Landing3D() {
             </motion.p>
 
             <motion.button className="enter-btn"
-              onClick={() => navigate("/scan")}
+              onClick={() => navigate("/auth")}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.1, duration: 0.8 }}

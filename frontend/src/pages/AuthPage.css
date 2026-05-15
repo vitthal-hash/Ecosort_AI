@@ -1,0 +1,267 @@
+/* ── Auth page — sits over the same dark space background as the landing ── */
+
+.auth-root {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 60% 40%, #0a1628 0%, #000005 70%);
+  padding: 24px;
+  font-family: var(--font-main, "DM Sans", sans-serif);
+}
+
+/* Subtle star-dust dots so it doesn't feel empty */
+.auth-root::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 18%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 75%, rgba(255,255,255,0.20) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 60%, rgba(255,255,255,0.30) 0%, transparent 100%),
+    radial-gradient(1px 1px at 10% 85%, rgba(255,255,255,0.20) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* ── Card ── */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(0, 255, 150, 0.18);
+  border-radius: 20px;
+  padding: 40px 36px 36px;
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 0 0 1px rgba(0, 255, 150, 0.06),
+    0 24px 64px rgba(0, 0, 0, 0.7),
+    0 0 80px rgba(0, 200, 120, 0.05);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Logo / Brand ── */
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.auth-brand-icon {
+  width: 38px;
+  height: 38px;
+  background: rgba(0, 255, 150, 0.12);
+  border: 1px solid rgba(0, 255, 150, 0.3);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.auth-brand-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.06em;
+}
+
+.auth-brand-name span {
+  color: #00ffc8;
+}
+
+/* ── Title ── */
+.auth-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+}
+
+.auth-subtitle {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0 0 28px;
+}
+
+/* ── Tab switcher ── */
+.auth-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 28px;
+  gap: 3px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 9px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth-tab.active {
+  background: rgba(0, 255, 150, 0.14);
+  color: #00ffc8;
+  border: 1px solid rgba(0, 255, 150, 0.25);
+}
+
+/* ── Form ── */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.auth-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.auth-input::placeholder {
+  color: rgba(255, 255, 255, 0.22);
+}
+
+.auth-input:focus {
+  border-color: rgba(0, 255, 150, 0.45);
+  box-shadow: 0 0 0 3px rgba(0, 255, 150, 0.08);
+}
+
+.auth-input.error {
+  border-color: rgba(239, 68, 68, 0.6);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
+}
+
+/* ── Error / Success messages ── */
+.auth-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #fca5a5;
+  line-height: 1.5;
+}
+
+.auth-success {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(0, 255, 150, 0.08);
+  border: 1px solid rgba(0, 255, 150, 0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #6ee7b7;
+  line-height: 1.5;
+}
+
+/* ── Submit button ── */
+.auth-submit {
+  margin-top: 6px;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #00ffc8 0%, #00c896 100%);
+  color: #000;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(0, 255, 150, 0.25);
+  letter-spacing: 0.02em;
+}
+
+.auth-submit:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(0, 255, 150, 0.35);
+}
+
+.auth-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Password hint ── */
+.auth-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 2px;
+}
+
+/* ── Back link ── */
+.auth-back {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.auth-back-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.2s;
+}
+
+.auth-back-btn:hover {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Loading spinner inside button ── */
+.auth-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: auth-spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+@keyframes auth-spin {
+  to { transform: rotate(360deg); }
+}

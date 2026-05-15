@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { useApp } from "../context/AppContext";
 import { WASTE_ITEMS, BIN_MAP } from "../data/wasteData";
 import "./ProcessingScreen.css";
@@ -10,23 +11,27 @@ export default function ProcessingScreen() {
 
   // ── ALL hooks must be at the top — no returns before these ────────────────
   const [currentClassIdx, setCurrentClassIdx] = useState(0);
+  // selected shape: { [className]: { [itemId]: count } }
+  // e.g. { plastic: { plastic_bottle: 3, plastic_bag: 1 } }
   const [selected,        setSelected]        = useState({});
   const [phase,           setPhase]           = useState("select");
   const [skipped,         setSkipped]         = useState(new Set());
   const [animatingOut,    setAnimatingOut]    = useState(false);
 
   // Derived values (safe after hooks)
-  const classQueue   = Object.keys(scanResults).filter(c => scanResults[c] > 0);
-  const currentClass = classQueue[currentClassIdx];
-  const maxAllowed   = currentClass ? (scanResults[currentClass] || 1) : 0;
-  const items        = currentClass ? (WASTE_ITEMS[currentClass.toLowerCase()] || []) : [];
-  const mySelected   = selected[currentClass] || [];
-  const binInfo      = currentClass ? BIN_MAP[currentClass.toLowerCase()] : null;
+  const classQueue      = Object.keys(scanResults).filter(c => scanResults[c] > 0);
+  const currentClass    = classQueue[currentClassIdx];
+  const maxAllowed      = currentClass ? (scanResults[currentClass] || 1) : 0;
+  const items           = currentClass ? (WASTE_ITEMS[currentClass.toLowerCase()] || []) : [];
+  // mySelected is { itemId: count } for the current class
+  const mySelected      = selected[currentClass] || {};
+  const mySelectedTotal = Object.values(mySelected).reduce((a, b) => a + b, 0);
+  const binInfo         = currentClass ? BIN_MAP[currentClass.toLowerCase()] : null;
 
   // ── Guard: already confirmed items this session ───────────────────────────
   if (processingDone) {
     return (
-      <div className="proc-empty">
+      <motion.div className="proc-empty" initial={{opacity:0}} animate={{opacity:1}}>
         <div className="proc-empty-icon">✅</div>
         <h2>Items already processed!</h2>
         <p>
@@ -34,38 +39,55 @@ export default function ProcessingScreen() {
           Head to Bin Sort to finish sorting, or start a new detection.
         </p>
         <div className="btn-row">
-        <button onClick={() => navigate("/bin-animation")}>🗑️ Continue to Bin Sort</button>
-        <button onClick={() => navigate("/scan")} style={{ marginTop: 8 }}>🔍 New Detection</button>
-        <button onClick={() => navigate("/stats")} style={{ marginTop: 8 }}>📊 View Statistics</button>
+          <button onClick={() => navigate("/bin-animation")}>🗑️ Continue to Bin Sort</button>
+          <button onClick={() => navigate("/scan")} style={{ marginTop: 8 }}>🔍 New Detection</button>
+          <button onClick={() => navigate("/stats")} style={{ marginTop: 8 }}>📊 View Statistics</button>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   // ── Guard: nothing detected yet ───────────────────────────────────────────
   if (classQueue.length === 0) {
     return (
-      <div className="proc-empty">
+      <motion.div className="proc-empty" initial={{opacity:0}} animate={{opacity:1}}>
         <div className="proc-empty-icon">🔍</div>
         <h2>No detections to process</h2>
         <p>Go back to the scanner and detect some waste objects first.</p>
         <button onClick={() => navigate("/scan")}>← Back to Scanner</button>
-      </div>
+      </motion.div>
     );
   }
 
   // ── Handlers ──────────────────────────────────────────────────────────────
-  function toggleItem(itemId) {
+
+  // Clicking a card INCREMENTS its count (up to maxAllowed total across all cards).
+  // Right-clicking or long-pressing decrements (handled via onContextMenu).
+  function incrementItem(itemId) {
     setSelected(prev => {
-      const cur = prev[currentClass] || [];
-      if (cur.includes(itemId)) return { ...prev, [currentClass]: cur.filter(i => i !== itemId) };
-      if (cur.length >= maxAllowed) return prev;
-      return { ...prev, [currentClass]: [...cur, itemId] };
+      const cur = prev[currentClass] || {};
+      const currentCount = cur[itemId] || 0;
+      if (mySelectedTotal >= maxAllowed) return prev; // already at max
+      return {
+        ...prev,
+        [currentClass]: { ...cur, [itemId]: currentCount + 1 },
+      };
+    });
+  }
+
+  function decrementItem(itemId) {
+    setSelected(prev => {
+      const cur = prev[currentClass] || {};
+      const currentCount = cur[itemId] || 0;
+      if (currentCount === 0) return prev;
+      const updated = { ...cur, [itemId]: currentCount - 1 };
+      if (updated[itemId] === 0) delete updated[itemId];
+      return { ...prev, [currentClass]: updated };
     });
   }
 
   function nextClass() {
-    if (mySelected.length === 0 && !skipped.has(currentClass)) return;
+    if (mySelectedTotal === 0 && !skipped.has(currentClass)) return;
     setAnimatingOut(true);
     setTimeout(() => {
       setAnimatingOut(false);
@@ -76,7 +98,7 @@ export default function ProcessingScreen() {
 
   function skipClass() {
     setSkipped(prev => new Set([...prev, currentClass]));
-    setSelected(prev => ({ ...prev, [currentClass]: [] }));
+    setSelected(prev => ({ ...prev, [currentClass]: {} }));
     setAnimatingOut(true);
     setTimeout(() => {
       setAnimatingOut(false);
@@ -88,9 +110,15 @@ export default function ProcessingScreen() {
   function handleConfirm() {
     const confirmed = [];
     classQueue.forEach(cls => {
-      (selected[cls] || []).forEach(id => {
+      const counts = selected[cls] || {};
+      Object.entries(counts).forEach(([id, count]) => {
         const item = (WASTE_ITEMS[cls.toLowerCase()] || []).find(i => i.id === id);
-        if (item) confirmed.push({ ...item, class: cls, bin: BIN_MAP[cls.toLowerCase()]?.bin });
+        if (item && count > 0) {
+          // Push one entry per count so downstream logic stays simple
+          for (let n = 0; n < count; n++) {
+            confirmed.push({ ...item, class: cls, bin: BIN_MAP[cls.toLowerCase()]?.bin });
+          }
+        }
       });
     });
     setConfirmedItems(confirmed);
@@ -99,15 +127,22 @@ export default function ProcessingScreen() {
 
   // ── Summary phase ──────────────────────────────────────────────────────────
   if (phase === "summary") {
-    const allSelected = classQueue.flatMap(cls =>
-      (selected[cls] || []).map(id => {
+    // Expand { itemId: count } maps into a flat array for display
+    const allSelected = classQueue.flatMap(cls => {
+      const counts = selected[cls] || {};
+      return Object.entries(counts).flatMap(([id, count]) => {
         const item = (WASTE_ITEMS[cls.toLowerCase()] || []).find(i => i.id === id);
-        return item ? { ...item, class: cls } : null;
-      }).filter(Boolean)
-    );
+        if (!item || count === 0) return [];
+        return Array.from({ length: count }, (_, n) => ({ ...item, class: cls, _key: `${id}-${n}` }));
+      });
+    });
 
     return (
-      <div className="proc-root summary-phase">
+      <motion.div
+        className="proc-root summary-phase"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+      >
         <div className="summary-header">
           <div className="summary-title">
             <span className="summary-icon">✅</span>
@@ -118,18 +153,34 @@ export default function ProcessingScreen() {
           </div>
         </div>
 
-        <div className="summary-grid">
+        <motion.div
+          className="summary-grid"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+          }}
+        >
           {allSelected.map((item, i) => (
-            <div key={item.id + i} className="summary-card" style={{ animationDelay: `${i * 0.05}s` }}>
+            <motion.div
+              key={item._key}
+              className="summary-card"
+              variants={{
+                hidden: { opacity: 0, y: 15 },
+                visible: { opacity: 1, y: 0 }
+              }}
+              whileHover={{ scale: 1.05 }}
+            >
               <img src={item.img} alt={item.label} onError={e => { e.target.style.display = "none"; }} />
               <span className="summary-emoji">{item.emoji}</span>
               <div className="summary-card-info">
                 <div className="summary-card-label">{item.label}</div>
                 <div className="summary-card-class">{item.class}</div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {allSelected.length === 0 && (
           <div className="summary-none">No items selected. All were marked as wrong detections.</div>
@@ -143,13 +194,18 @@ export default function ProcessingScreen() {
             Proceed to Bin Sorting →
           </button>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   // ── Selection phase ────────────────────────────────────────────────────────
   return (
-    <div className={`proc-root ${animatingOut ? "slide-out" : "slide-in"}`}>
+    <motion.div
+      className="proc-root"
+      initial={{ opacity: 0, x: 30 }}
+      animate={{ opacity: animatingOut ? 0 : 1, x: animatingOut ? -30 : 0 }}
+      transition={{ duration: 0.3 }}
+    >
 
       <div className="proc-progress-bar">
         {classQueue.map((cls, i) => (
@@ -169,49 +225,88 @@ export default function ProcessingScreen() {
             {currentClass?.toUpperCase()}
           </div>
           <div className="proc-class-sub">
-            Select up to <strong>{maxAllowed}</strong> item{maxAllowed !== 1 ? "s" : ""} detected
-            <span className="proc-class-count">{mySelected.length}/{maxAllowed}</span>
+            Tap to add · right-click to remove · up to <strong>{maxAllowed}</strong> item{maxAllowed !== 1 ? "s" : ""}
+            <span className="proc-class-count">{mySelectedTotal}/{maxAllowed}</span>
           </div>
         </div>
-        <div className="proc-bin-badge" style={{ background: (binInfo?.color || "#00ffc8") + "22", borderColor: binInfo?.color }}>
+        <motion.div
+          className="proc-bin-badge"
+          style={{ background: (binInfo?.color || "#00ffc8") + "22", borderColor: binInfo?.color }}
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
           {binInfo?.emoji} {binInfo?.bin}
-        </div>
+        </motion.div>
       </div>
 
-      <div className="proc-items-grid">
-        {items.map((item, i) => {
-          const isSelected = mySelected.includes(item.id);
-          const isDisabled = !isSelected && mySelected.length >= maxAllowed;
+      <motion.div
+        className="proc-items-grid"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: { opacity: 1, transition: { staggerChildren: 0.08 } }
+        }}
+      >
+        {items.map((item) => {
+          const itemCount = mySelected[item.id] || 0;
+          const isSelected = itemCount > 0;
+          const isDisabled = !isSelected && mySelectedTotal >= maxAllowed;
           return (
-            <button
+            <motion.button
               key={item.id}
               className={`item-card ${isSelected ? "selected" : ""} ${isDisabled ? "disabled" : ""}`}
-              onClick={() => toggleItem(item.id)}
-              style={{ animationDelay: `${i * 0.06}s`, "--cls-color": binInfo?.color || "#00ffc8" }}
+              onClick={() => incrementItem(item.id)}
+              onContextMenu={(e) => { e.preventDefault(); decrementItem(item.id); }}
+              style={{ "--cls-color": binInfo?.color || "#00ffc8" }}
+              variants={{
+                hidden: { opacity: 0, scale: 0.9, y: 20 },
+                visible: { opacity: 1, scale: 1, y: 0 }
+              }}
+              whileHover={!isDisabled ? { scale: 1.04, y: -4, boxShadow: `0 12px 32px rgba(0,0,0,0.3), 0 0 20px ${binInfo?.color || "#00ffc8"}40` } : {}}
+              whileTap={!isDisabled ? { scale: 0.96 } : {}}
             >
               <div className="item-card-img-wrap">
                 <img src={item.img} alt={item.label} className="item-card-img"
                   onError={e => { e.target.style.display = "none"; }} />
                 <span className="item-card-emoji">{item.emoji}</span>
-                {isSelected && <div className="item-check">✓</div>}
+                {/* Show count badge when > 0 */}
+                <AnimatePresence>
+                  {isSelected && (
+                    <motion.div
+                      className="item-check"
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0 }}
+                      style={{
+                        width: 28, height: 28,
+                        fontSize: itemCount > 9 ? 11 : 14,
+                        fontWeight: 700,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}
+                    >
+                      {itemCount}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
               <div className="item-card-label">{item.label}</div>
-            </button>
+            </motion.button>
           );
         })}
-      </div>
+      </motion.div>
 
       <div className="proc-actions">
         <button className="btn-wrong" onClick={skipClass}>
           ⚠️ Wrong Detection — Skip
         </button>
-        <button className="btn-next" onClick={nextClass} disabled={mySelected.length === 0}>
+        <button className="btn-next" onClick={nextClass} disabled={mySelectedTotal === 0}>
           {currentClassIdx + 1 >= classQueue.length
             ? "Review All →"
             : `Next: ${classQueue[currentClassIdx + 1] || ""} →`}
         </button>
       </div>
 
-    </div>
+    </motion.div>
   );
 }

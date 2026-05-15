@@ -3,7 +3,7 @@ from google import genai
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # load .env
+load_dotenv()
 
 router = APIRouter()
 
@@ -16,12 +16,14 @@ def chat(data: dict):
     try:
         response = client.models.generate_content(
             model="gemini-2.5-flash",
-            contents=prompt,
+            contents=prompt
         )
 
         return {
             "reply": response.text
         }
 
-    except Exception as e:
-        return {"error": str(e)}
+    except Exception:
+        return {
+            "reply": "⚠️ Server busy, try again"
+        }
