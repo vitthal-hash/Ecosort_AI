@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useCallback } from "react";
 
 const AuthContext = createContext(null);
 
-const API = "http://localhost:5000/api";
+const API = "https://ecosort-ai-9apn.onrender.com/api";
 
 function readSession(key, fallback) {
   try { return JSON.parse(sessionStorage.getItem(key)) ?? fallback; }
