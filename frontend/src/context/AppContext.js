@@ -13,7 +13,7 @@ function writeSession(key, value) {
   try { sessionStorage.setItem(key, JSON.stringify(value)); } catch {}
 }
 
-const EMPTY_STATS = { sessions: [], totalItems: 0, energySavedKWh: 0, co2SavedKg: 0, binCounts: {} };
+const EMPTY_STATS = { sessions: [], totalItems: 0, energySavedKWh: 0, co2SavedKg: 0, binCounts: {}, walletBalance: 0 };
 
 // userId: the logged-in user's id string (or null if logged out).
 // This is passed in from App.js so AppContext always knows who is active.
@@ -28,6 +28,10 @@ export function AppProvider({ children, userId }) {
 
   // ── All-time stats (per user, from backend) ─────────────────
   const [allTimeStats, setAllTimeStatsState] = useState(EMPTY_STATS);
+
+  // ── Coin animation trigger ──────────────────────────────────
+  const [lastSessionEarnings, setLastSessionEarnings] = useState(0);
+  const [coinAnimTrigger,     setCoinAnimTrigger]     = useState(0);
 
   // 🔥 Reload stats from backend whenever the logged-in user changes
   useEffect(() => {
@@ -90,6 +94,10 @@ export function AppProvider({ children, userId }) {
 
     const { co2SavedKg, energySavedKWh } = computeImpact(itemsWithBin);
 
+    // ₹0.10 per item sorted
+    const RUPEES_PER_ITEM = 0.10;
+    const sessionEarnings = parseFloat((itemsWithBin.length * RUPEES_PER_ITEM).toFixed(2));
+
     const session = {
       date,
       time,
@@ -99,6 +107,7 @@ export function AppProvider({ children, userId }) {
       totalItems: itemsWithBin.length,
       energySavedKWh,
       co2SavedKg,
+      earnings: sessionEarnings,
     };
 
     setCurrentSessionState(session);
@@ -113,6 +122,7 @@ export function AppProvider({ children, userId }) {
       energySavedKWh: parseFloat(((allTimeStats.energySavedKWh || 0) + energySavedKWh).toFixed(2)),
       co2SavedKg:     parseFloat(((allTimeStats.co2SavedKg     || 0) + co2SavedKg).toFixed(2)),
       binCounts:      { ...allTimeStats.binCounts },
+      walletBalance:  parseFloat(((allTimeStats.walletBalance || 0) + sessionEarnings).toFixed(2)),
     };
 
     Object.entries(binCounts).forEach(([bin, cnt]) => {
@@ -120,6 +130,8 @@ export function AppProvider({ children, userId }) {
     });
 
     setAllTimeStatsState(next);
+    setLastSessionEarnings(sessionEarnings);
+    setCoinAnimTrigger(t => t + 1);
 
     // 🔥 SAVE TO BACKEND under this user's id
     if (userId) {
@@ -173,6 +185,9 @@ export function AppProvider({ children, userId }) {
       allTimeStats,   clearAllTimeStats,
       addToStats: finaliseSession,
       stats: allTimeStats,
+      walletBalance: allTimeStats.walletBalance || 0,
+      lastSessionEarnings,
+      coinAnimTrigger,
     }}>
       {children}
     </AppContext.Provider>

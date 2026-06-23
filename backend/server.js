@@ -30,6 +30,7 @@ const StatsSchema = new mongoose.Schema({
   energySavedKWh: { type: Number, default: 0 },
   co2SavedKg:     { type: Number, default: 0 },
   binCounts:      { type: Object, default: {} },
+  walletBalance:  { type: Number, default: 0 },   // ₹0.10 per item sorted
 });
 const Stats = mongoose.model("Stats", StatsSchema);
 
@@ -145,7 +146,7 @@ app.post("/api/clear/:userId", async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(userId))
       return res.status(400).json({ error: "Invalid user ID." });
 
-    const empty = { sessions: [], totalItems: 0, energySavedKWh: 0, co2SavedKg: 0, binCounts: {} };
+    const empty = { sessions: [], totalItems: 0, energySavedKWh: 0, co2SavedKg: 0, binCounts: {}, walletBalance: 0 };
     await Stats.findOneAndUpdate({ userId }, { $set: empty }, { upsert: true });
     res.json(empty);
   } catch (err) {

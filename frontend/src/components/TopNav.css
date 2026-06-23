@@ -155,3 +155,129 @@
 [data-theme="light"] .topnav-tab:hover { color: #2d5a42; }
 [data-theme="light"] .topnav-tab.active{ color: #0a2018; }
 [data-theme="light"] .topnav-name      { color: #0a2018; }
+/* ── Wallet widget ─────────────────────────────────────────────────────────── */
+.topnav-wallet {
+  position: relative;
+  display: flex; align-items: center; gap: 6px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 5px 12px 5px 9px;
+  cursor: default;
+  user-select: none;
+  transition: box-shadow 0.3s, transform 0.3s;
+  overflow: visible;
+}
+
+.wallet-coin-icon {
+  font-size: 16px;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(255, 210, 60, 0.7));
+}
+
+.wallet-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 12px; font-weight: 700;
+  color: #ffd23f;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 10px rgba(255, 210, 60, 0.5);
+}
+
+/* Pop animation when balance updates */
+.wallet-pop {
+  animation: walletPop 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 0 24px rgba(255, 210, 60, 0.45), 0 2px 12px rgba(0,0,0,0.3);
+}
+@keyframes walletPop {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.18) rotate(-2deg); }
+  60%  { transform: scale(1.1)  rotate(1deg); }
+  100% { transform: scale(1); }
+}
+
+/* "+₹X.XX" flash above the wallet */
+.wallet-earned-flash {
+  position: absolute;
+  top: -28px; left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ffd23f, #f59e0b);
+  color: #000;
+  font-family: 'Orbitron', monospace;
+  font-size: 11px; font-weight: 900;
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(255, 200, 0, 0.6);
+  animation: earnedFlash 2.6s ease forwards;
+  pointer-events: none;
+  z-index: 1000;
+}
+@keyframes earnedFlash {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(6px) scale(0.8); }
+  12%  { opacity: 1; transform: translateX(-50%) translateY(0)   scale(1.08); }
+  70%  { opacity: 1; transform: translateX(-50%) translateY(-8px) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-18px) scale(0.9); }
+}
+
+/* ── Coin burst particles ───────────────────────────────────────────────────── */
+.coin-burst {
+  position: absolute;
+  top: 50%; left: 50%;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.coin-particle {
+  position: absolute;
+  font-size: 14px;
+  opacity: 1;
+  transform-origin: center;
+}
+
+.cp-0 { animation: coinFly0 1s ease-out 0s   forwards; }
+.cp-1 { animation: coinFly1 1s ease-out 0.04s forwards; }
+.cp-2 { animation: coinFly2 1s ease-out 0.08s forwards; }
+.cp-3 { animation: coinFly3 1s ease-out 0.05s forwards; }
+.cp-4 { animation: coinFly4 1s ease-out 0.02s forwards; }
+.cp-5 { animation: coinFly5 1s ease-out 0.06s forwards; }
+.cp-6 { animation: coinFly6 1s ease-out 0.03s forwards; }
+.cp-7 { animation: coinFly7 1s ease-out 0.07s forwards; }
+
+@keyframes coinFly0 {
+  0%   { transform: translate(0,0) scale(1) rotate(0deg);   opacity: 1; }
+  100% { transform: translate(-48px,-52px) scale(0.35) rotate(180deg); opacity: 0; }
+}
+@keyframes coinFly1 {
+  0%   { transform: translate(0,0) scale(1) rotate(0deg);   opacity: 1; }
+  100% { transform: translate(0,-64px) scale(0.35) rotate(-200deg); opacity: 0; }
+}
+@keyframes coinFly2 {
+  0%   { transform: translate(0,0) scale(1) rotate(0deg);   opacity: 1; }
+  100% { transform: translate(50px,-50px) scale(0.35) rotate(160deg); opacity: 0; }
+}
+@keyframes coinFly3 {
+  0%   { transform: translate(0,0) scale(1) rotate(0deg);   opacity: 1; }
+  100% { transform: translate(60px,0) scale(0.35) rotate(-150deg); opacity: 0; }
+}
+@keyframes coinFly4 {
+  0%   { transform: translate(0,0) scale(1) rotate(0deg);   opacity: 1; }
+  100% { transform: translate(48px,52px) scale(0.35) rotate(200deg); opacity: 0; }
+}
+@keyframes coinFly5 {
+  0%   { transform: translate(0,0) scale(1) rotate(0deg);   opacity: 1; }
+  100% { transform: translate(0,60px) scale(0.35) rotate(-180deg); opacity: 0; }
+}
+@keyframes coinFly6 {
+  0%   { transform: translate(0,0) scale(1) rotate(0deg);   opacity: 1; }
+  100% { transform: translate(-52px,48px) scale(0.35) rotate(220deg); opacity: 0; }
+}
+@keyframes coinFly7 {
+  0%   { transform: translate(0,0) scale(1) rotate(0deg);   opacity: 1; }
+  100% { transform: translate(-60px,0) scale(0.35) rotate(-140deg); opacity: 0; }
+}
+
+[data-theme="light"] .topnav-wallet {
+  background: rgba(255,248,220,0.85);
+  border-color: rgba(245,158,11,0.3);
+}
+[data-theme="light"] .wallet-label { color: #b45309; text-shadow: none; }

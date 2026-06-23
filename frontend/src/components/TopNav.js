@@ -1,5 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import { useApp } from "../context/AppContext";
+import { useEffect, useRef, useState } from "react";
 import "./TopNav.css";
 
 const NAV_ITEMS = [
@@ -14,6 +16,25 @@ export default function TopNav() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isDark, toggleTheme } = useTheme();
+  const { walletBalance, lastSessionEarnings, coinAnimTrigger } = useApp();
+
+  // Track previous trigger to detect new completions
+  const prevTrigger = useRef(0);
+  const [showCoinBurst, setShowCoinBurst] = useState(false);
+  const [displayEarned, setDisplayEarned] = useState(0);
+  const [animateBalance, setAnimateBalance] = useState(false);
+
+  useEffect(() => {
+    if (coinAnimTrigger > 0 && coinAnimTrigger !== prevTrigger.current) {
+      prevTrigger.current = coinAnimTrigger;
+      setDisplayEarned(lastSessionEarnings);
+      setShowCoinBurst(true);
+      setAnimateBalance(true);
+      const t1 = setTimeout(() => setShowCoinBurst(false), 2800);
+      const t2 = setTimeout(() => setAnimateBalance(false), 700);
+      return () => { clearTimeout(t1); clearTimeout(t2); };
+    }
+  }, [coinAnimTrigger, lastSessionEarnings]);
 
   return (
     <nav className="topnav">
@@ -43,6 +64,24 @@ export default function TopNav() {
       </div>
 
       <div className="topnav-right">
+        {/* ── Wallet / Coin balance ── */}
+        <div className={`topnav-wallet ${animateBalance ? "wallet-pop" : ""}`}>
+          <span className="wallet-coin-icon">🪙</span>
+          <span className="wallet-label">
+            ₹{(walletBalance || 0).toFixed(2)}
+          </span>
+          {showCoinBurst && (
+            <span className="wallet-earned-flash">+₹{displayEarned.toFixed(2)}</span>
+          )}
+          {showCoinBurst && (
+            <div className="coin-burst" aria-hidden="true">
+              {[...Array(8)].map((_, i) => (
+                <span key={i} className={`coin-particle cp-${i}`}>🪙</span>
+              ))}
+            </div>
+          )}
+        </div>
+
         <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme">
           {isDark ? "☀️" : "🌙"}
         </button>
