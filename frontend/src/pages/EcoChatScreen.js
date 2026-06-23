@@ -93,6 +93,7 @@ export default function EcoChatScreen() {
 });
 
 const data = await res.json();
+console.log("API RESPONSE:", data);
 
 if (data.error) {
   console.log("BACKEND ERROR:", data.error);
