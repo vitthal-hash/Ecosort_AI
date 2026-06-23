@@ -217,7 +217,7 @@ if (data.error) {
   throw new Error(data.error);
 }
 
-const reply = data.reply;
+const reply = data.reply || "⚠️ No response received";
 
       // Update history for next turn
       historyRef.current = [
@@ -248,11 +248,15 @@ const reply = data.reply;
     }
   }, [navigate, buildContext]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── TTS ─────────────────────────────────────────────────────────────────────
-  function speakText(text) {
+ function speakText(text = "") {
     if (!window.speechSynthesis) return;
+    if (!text) return;
+
     window.speechSynthesis.cancel();
-    const plain = text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/[#*`•]/g, "");
+
+    const plain = String(text)
+      .replace(/\*\*(.*?)\*\*/g, "$1")
+      .replace(/[#*`•]/g, "");
     const utt = new SpeechSynthesisUtterance(plain);
     utt.rate = 1.1; utt.pitch = 1.05; utt.volume = 0.9;
     const tryVoice = () => {
@@ -340,9 +344,12 @@ const reply = data.reply;
               <div key={i} className={`ebot-msg ebot-msg-${msg.role}`}>
                 {msg.role === "assistant" && <span className="ebot-avatar-sm">🌿</span>}
                 <div className="ebot-bubble">
-                  {msg.text.split("\n").filter(Boolean).map((line, j) => (
-                    <p key={j}>{line.replace(/\*\*(.*?)\*\*/g, "$1")}</p>
-                  ))}
+                  {String(msg.text || "")
+  .split("\n")
+  .filter(Boolean)
+  .map((line, j) => (
+    <p key={j}>{line.replace(/\*\*(.*?)\*\*/g, "$1")}</p>
+))}
                   {msg.role === "assistant" && (
                     <button className="ebot-speak" onClick={() => speakText(msg.text)} title="Read aloud">🔊</button>
                   )}

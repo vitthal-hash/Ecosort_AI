@@ -99,7 +99,7 @@ if (data.error) {
 throw new Error(data.error);
 }
 
-const reply = data.reply;
+const reply = data.reply || "⚠️ No response received";
 
       // Update history for next turn
       historyRef.current = [
@@ -130,27 +130,45 @@ const reply = data.reply;
   setLoading(false);   // ✅ THIS WAS MISSING
 }}
   // ── Text-to-speech ──────────────────────────────────────────────────────────
-  function speakText(text) {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const plain = text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/[#*`]/g, "");
-    const utt = new SpeechSynthesisUtterance(plain);
-    utt.rate = 1.05; utt.pitch = 1.1; utt.volume = 0.92;
-    const trySetVoice = () => {
-      const voices = speechSynthesis.getVoices();
-      const preferred = voices.find(v => v.lang.startsWith("en-IN"))
-        || voices.find(v => v.lang.startsWith("en") && v.name.toLowerCase().includes("female"))
-        || voices.find(v => v.lang.startsWith("en"));
-      if (preferred) utt.voice = preferred;
-    };
-    trySetVoice();
-    if (speechSynthesis.getVoices().length === 0) speechSynthesis.onvoiceschanged = trySetVoice;
-    utt.onstart = () => setSpeaking(true);
-    utt.onend   = () => setSpeaking(false);
-    utt.onerror = () => setSpeaking(false);
-    speechSynthesis.speak(utt);
+  function speakText(text = "") {
+  if (!window.speechSynthesis) return;
+  if (!text) return;
+
+  window.speechSynthesis.cancel();
+
+  const plain = String(text)
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/[#*`]/g, "");
+
+  const utt = new SpeechSynthesisUtterance(plain);
+
+  utt.rate = 1.05;
+  utt.pitch = 1.1;
+  utt.volume = 0.92;
+
+  const trySetVoice = () => {
+    const voices = speechSynthesis.getVoices();
+
+    const preferred =
+      voices.find(v => v.lang.startsWith("en-IN")) ||
+      voices.find(v => v.lang.startsWith("en") && v.name.toLowerCase().includes("female")) ||
+      voices.find(v => v.lang.startsWith("en"));
+
+    if (preferred) utt.voice = preferred;
+  };
+
+  trySetVoice();
+
+  if (speechSynthesis.getVoices().length === 0) {
+    speechSynthesis.onvoiceschanged = trySetVoice;
   }
 
+  utt.onstart = () => setSpeaking(true);
+  utt.onend = () => setSpeaking(false);
+  utt.onerror = () => setSpeaking(false);
+
+  speechSynthesis.speak(utt);
+}
   function stopSpeaking() {
     window.speechSynthesis?.cancel();
     setSpeaking(false);
@@ -298,9 +316,12 @@ const reply = data.reply;
               {msg.role === "assistant" && <div className="eco-msg-avatar">🌿</div>}
               <div className="eco-msg-bubble">
                 <div className="eco-msg-text">
-                  {msg.text.split("\n").filter(Boolean).map((line, j) => (
-                    <p key={j}>{line.replace(/\*\*(.*?)\*\*/g, "$1")}</p>
-                  ))}
+                  {String(msg.text || "")
+  .split("\n")
+  .filter(Boolean)
+  .map((line, j) => (
+    <p key={j}>{line.replace(/\*\*(.*?)\*\*/g, "$1")}</p>
+))}
                 </div>
                 <div className="eco-msg-footer">
                   <span className="eco-msg-ts">
