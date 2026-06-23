@@ -38,7 +38,7 @@ function classIcon(cls) { return CLASS_ICONS[cls?.toLowerCase()] || CLASS_ICONS.
 async function callDetect(fileOrBlob) {
   const fd = new FormData();
   fd.append("file", fileOrBlob);
-  const res  = await fetch("http://127.0.0.1:8000/detect", { method: "POST", body: fd });
+  const res  = await fetch("https://vitthalmore-ecosort-ai.hf.space/detect", { method: "POST", body: fd });
   const data = await res.json();
   const detections = deduplicateDetections(data.detections || []);
 
