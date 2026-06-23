@@ -82,7 +82,7 @@ export default function EcoChatScreen() {
       const fullSystemPrompt = SYSTEM_PROMPT + buildSessionContext();
 
       // askGemini maintains history externally — we pass historyRef
-      const res = await fetch("https://vitthalmore-ecosort-ai.hf.space/detect", {
+      const res = await fetch("https://vitthalmore-ecosort-ai.hf.space/chat", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({

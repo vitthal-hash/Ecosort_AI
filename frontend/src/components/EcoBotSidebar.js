@@ -200,7 +200,7 @@ export default function EcoBotSidebar({ onToggle }) {
 
     try {
       const fullSystemPrompt = SYSTEM_PROMPT + buildContext();
-      const res = await fetch("https://vitthalmore-ecosort-ai.hf.space/detect", {
+      const res = await fetch("https://vitthalmore-ecosort-ai.hf.space/chat", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
