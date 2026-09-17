@@ -6,3 +6,4 @@ numpy
 python-dotenv
 google-generativeai
 pydantic
+google-genai
