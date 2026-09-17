@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useCallback, useEffect } from "rea
 import { computeImpact } from "../data/wasteData";
 
 const AppContext = createContext(null);
-const API = "https://ecosort-ai-9apn.onrender.com/api";
+const API = "https://ecosort-ai-1.onrender.com/api";
 
 function readSession(key, fallback) {
   try { return JSON.parse(sessionStorage.getItem(key)) ?? fallback; }
