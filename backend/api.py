@@ -20,7 +20,11 @@ app.add_middleware(
 @app.post("/detect")
 async def detect(file: UploadFile = File(...)):
     contents = await file.read()
-    np_arr   = np.frombuffer(contents, np.uint8)
-    frame    = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+    np_arr = np.frombuffer(contents, np.uint8)
+    frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+    frame = cv2.resize(frame, (640, 480))
+
     detections, counts = detect_frame(frame)
+
     return {"detections": detections, "counts": counts}

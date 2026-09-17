@@ -24,7 +24,12 @@ model = YOLO(MODEL_PATH)
 
 
 def detect_frame(frame):
-    results = model.track(frame, persist=True)
+    results = model.track(
+    frame,
+    persist=True,
+    imgsz=320,
+    device="cpu"
+)
 
     detections = []
 
