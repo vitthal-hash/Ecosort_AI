@@ -1,5 +1,10 @@
-from ultralytics import YOLO
 import os
+import torch
+from ultralytics import YOLO
+
+# Keep BLAS/torch thread usage low — multi-threaded ops can spike memory
+# and CPU contention on small instances (e.g. Render's 512Mi tier).
+torch.set_num_threads(1)
 
 
 # ── Locate best.pt by walking up from this file's location ───────────────────
@@ -17,6 +22,7 @@ def _find_model(filename="best.pt"):
         "  Make sure best.pt is in the project root folder."
     )
 
+
 MODEL_PATH = _find_model("best.pt")
 print(f"[EcoSort] ✅ Loaded model from: {MODEL_PATH}")
 
@@ -24,12 +30,21 @@ model = YOLO(MODEL_PATH)
 
 
 def detect_frame(frame):
-    results = model.track(
-    frame,
-    persist=True,
-    imgsz=320,
-    device="cpu"
-)
+    """
+    Runs detection on a single, independent frame/image.
+
+    NOTE: Uses model.predict() rather than model.track(). Tracking (ByteTrack/
+    BoT-SORT) is for associating objects across a continuous sequence of
+    frames (e.g. video). Since /detect receives one standalone image per
+    request with no relationship to previous requests, tracking adds memory
+    and compute overhead for no benefit — predict() is the correct tool here.
+    """
+    results = model.predict(
+        frame,
+        imgsz=320,
+        device="cpu",
+        verbose=False,
+    )
 
     detections = []
 
@@ -38,20 +53,15 @@ def detect_frame(frame):
             continue
 
         for box in r.boxes:
-            cls   = int(box.cls[0])
-            conf  = float(box.conf[0])
-            label = model.names[cls]
+            cls    = int(box.cls[0])
+            conf   = float(box.conf[0])
+            label  = model.names[cls]
             coords = list(map(int, box.xyxy[0].tolist()))
-
-            track_id = -1
-            if hasattr(box, "id") and box.id is not None:
-                track_id = int(box.id[0])
 
             detections.append({
                 "class":      label,
                 "confidence": round(conf, 2),
                 "box":        coords,
-                "id":         track_id,
             })
 
     counts = count_objects(detections)
@@ -73,13 +83,12 @@ def calculate_iou(box1, box2):
     return inter / union if union > 0 else 0
 
 
-# ── Count unique tracked objects in the current frame ────────────────────────
+# ── Count detections per class in the current frame ──────────────────────────
+# Without persistent tracking across frames, "counts" simply means how many
+# detected boxes of each class appeared in this single image.
 def count_objects(detections):
-    seen: dict[str, set] = {}
+    counts: dict[str, int] = {}
     for d in detections:
-        label    = d["class"]
-        track_id = d.get("id", -1)
-        if track_id is None or track_id == -1:
-            continue
-        seen.setdefault(label, set()).add(track_id)
-    return {cls: len(ids) for cls, ids in seen.items()}
+        label = d["class"]
+        counts[label] = counts.get(label, 0) + 1
+    return counts
